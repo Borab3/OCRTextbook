@@ -1,11 +1,6 @@
-# USAGE
-# python ocr.py --image images/example_01.png 
-# python ocr.py --image images/example_02.png  --preprocess blur
-
 # import the necessary packages
 import PIL.Image
 import pytesseract
-import argparse
 import cv2
 import os
 from reportlab.pdfgen import canvas
@@ -13,13 +8,6 @@ from reportlab.lib.pagesizes import letter, landscape
 from reportlab.platypus import Image, PageBreak
 import time
 
-# parse the arguments for images through terminal (no args right now, should be handled by the for loop)
-# ap = argparse.ArgumentParser()
-# ap.add_argument("-i", "--image", required=True,
-# 	help="path to input image to be OCR'd")
-# ap.add_argument("-p", "--preprocess", type=str, default="thresh",
-# 	help="type of preprocessing to be done")
-# args = vars(ap.parse_args())
 #CREATES THE CANVAS THAT I CAN WRITE TO
 save_name = "Precalculus-Axler.pdf" #name of the pdf
 canvas = canvas.Canvas(save_name,pagesize=landscape(letter))
@@ -35,14 +23,6 @@ for file in sorted(os.listdir('/home/ping/.PyCharmCE2018.2/config/scratches/imag
     print("created gray image") #testing
     cv2.imshow("Image", gray) #testing
     # check to see if we should apply thresholding to preprocess the image can uncomment/rework if pictures are too grainy (should not be the case)
-    # if args["preprocess"] == "thresh":
-    #     gray = cv2.threshold(gray, 0, 255,
-    #         cv2.THRESH_BINARY | cv2.THRESH_OTSU)[1]
-    #
-    # # make a check to see if median blurring should be done to remove
-    # # noise
-    # elif args["preprocess"] == "blur":
-    #     gray = cv2.medianBlur(gray, 3)
 
     # write the grayscale image to disk as a temporary file so we can
     # apply OCR to it
