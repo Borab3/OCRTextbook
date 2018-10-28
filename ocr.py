@@ -3,16 +3,16 @@ import PIL.Image
 import pytesseract
 import cv2
 import os
+from textwrap import wrap
+from reportlab import *
 from reportlab.pdfgen import canvas
-from reportlab.lib.pagesizes import letter, landscape
-from reportlab.platypus import Image, PageBreak
-import time
+from datetime import datetime
+from functools import reduce
 
 #CREATES THE CANVAS THAT I CAN WRITE TO
-save_name = "Precalculus-Axler.pdf" #name of the pdf
-canvas = canvas.Canvas(save_name,pagesize=landscape(letter))
-canvas.setLineWidth(.3)
-canvas.setFont('Helvetica', 12)
+save_name = "/home/ping/.PyCharmCE2018.2/config/scratches/Precalculus-Axler.pdf" #name + path of the pdf
+canvas = canvas.Canvas(save_name,pagesize=(4032, 3024), bottomup=1)
+totalTime = []
 for file in sorted(os.listdir('/home/ping/.PyCharmCE2018.2/config/scratches/images')): #add dirname and images; should pass back the
     # load the example image and convert it to grayscale
     fname = ("/home/ping/.PyCharmCE2018.2/config/scratches/images/"+file) #opencv requires the entire filepath to the image
@@ -21,7 +21,7 @@ for file in sorted(os.listdir('/home/ping/.PyCharmCE2018.2/config/scratches/imag
     #image = cv2.imread(args["image"]) #should be now loaded by the for loop
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     print("created gray image") #testing
-    cv2.imshow("Image", gray) #testing
+    #cv2.imshow("Image", gray) #testing
     # check to see if we should apply thresholding to preprocess the image can uncomment/rework if pictures are too grainy (should not be the case)
 
     # write the grayscale image to disk as a temporary file so we can
@@ -31,23 +31,37 @@ for file in sorted(os.listdir('/home/ping/.PyCharmCE2018.2/config/scratches/imag
 
     # load the image as a PIL/Pillow image, apply OCR, and then delete
     # the temporary file
+    print("processing ocr filter...")
+    time = datetime.now()
     text = pytesseract.image_to_string(PIL.Image.open(filename))
     os.remove(filename)
-    print(text)
+    #print(text) #commented for testing
+    totalTime.append(datetime.now() - time)
+    time = str(datetime.now() - time)
+    print("time elapsed = " + time)
+    print("total time taken so far = " + str(reduce(lambda x, y: x + y, totalTime)))
+    print("avg time taken for each page so far = " + str(reduce(lambda x, y: x + y, totalTime) / len(totalTime)))
 
-    # show the output images for testing
+    #opencv prototyping code
     # cv2.imshow("Image", image)
-    cv2.imshow("Output", gray) #TODO: comment out
-    cv2.waitKey(500) #testing; pops up the greyscale image that was ocr'd for half a second
+    #cv2.imshow("Output", gray) #TODO: comment out
+    #cv2.waitKey(500) #testing; pops up the greyscale image that was ocr'd for half a second
 
     #writes the images to pdf
-    canvas.drawImage(image,30,750) #draws image to odd page
+    canvas.drawImage(fname, 0, 0) #draws image to odd page
     canvas.showPage() #next page
-    canvas.drawString(100,750, text) #writes the ocr'd text ot even page
+    y = 3000
+    for line in wrap(text, 500): #text wraping so it doesn't go off the page
+        canvas.drawString(100, y, line)  # writes the ocr'd text to even page
+        y = y - 15
     canvas.showPage() #next page
     #end of loop
 
+canvas.drawString(0, 0, "scanned by Valid Dong")
+canvas.save() #uncomment to save final pdf
 
-
-#canvas.save() #uncomment to save final pdf
+#metrics
+print( "metrics")
+print("total time taken = " + str(reduce(lambda x, y: x + y, totalTime)))
+print("avg time taken for each page = " + str(reduce(lambda x, y: x + y, totalTime) / len(totalTime)))
 #end
