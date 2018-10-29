@@ -50,14 +50,14 @@ for file in sorted(os.listdir('/home/ping/.PyCharmCE2018.2/config/scratches/imag
     #writes the images to pdf
     canvas.drawImage(fname, 0, 0) #draws image to odd page
     canvas.showPage() #next page
-    y = 3000
-    for line in wrap(text, 500): #text wraping so it doesn't go off the page
+    y = 2900
+    for line in wrap(text, 190): #text wraping so it doesn't go off the page
+        canvas.setFont("Times-Roman", 45)
         canvas.drawString(100, y, line)  # writes the ocr'd text to even page
-        y = y - 15
+        y = y - 65
     canvas.showPage() #next page
     #end of loop
 
-canvas.drawString(0, 0, "scanned by Valid Dong")
 canvas.save() #uncomment to save final pdf
 
 #metrics
