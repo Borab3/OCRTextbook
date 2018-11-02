@@ -10,7 +10,7 @@ from datetime import datetime
 from functools import reduce
 
 #CREATES THE CANVAS THAT I CAN WRITE TO
-save_name = "/home/ping/.PyCharmCE2018.2/config/scratches/Precalculus-Axler.pdf" #name + path of the pdf
+save_name = "/home/ping/.PyCharmCE2018.2/config/scratches/file-name-to-save" #name (replace file-name-to-save with name of pdf)  + path of the pdf
 canvas = canvas.Canvas(save_name,pagesize=(4032, 3024), bottomup=1)
 totalTime = []
 for file in sorted(os.listdir('/home/ping/.PyCharmCE2018.2/config/scratches/images')): #add dirname and images; should pass back the
